@@ -1,0 +1,106 @@
+185.113.4.134
+USER0219
+
+wrkobj rjackson1
+
+creates a library
+
+need to create a source member 
+which will hold all sources
+
+crtsrcpf
+Create a source physical file
+
+name the file qrpglesrc1 since
+qrpglesrc already exists
+
+library names rjackson1
+(created qrpglesrc1 in *curlib)
+
+record length is 112 for rgble
+not 92
+
+wrkmbrpdm
+
+f6 to start a new file
+
+
+i adds a new line
+d deletes a line
+c copies a line
+B pastes above
+a pastes below
+RP repeats the same line
+dd at start and dd at end deletes a block
+
+
+in SEU type 'file' for save and exit
+
+Position to... to find the file if it 
+doesn't appear
+
+
+0001.00 *H header specification       
+0002.00 *F file specification         
+0003.00 *D declaration specification  
+0004.00 *C calculations specification            
+0005.00  /Free                    
+0005.01       Dsply 'Hello World';
+0005.02       *Inlr = *On;        
+0006.00  /End-Free                        
+
+14 to compile the program
+call (library name) / (program name)
+call user02191/first
+
+2nd column is the comment section if you put
+an asterisk it comments the line
+
+if you put a D in column 1 and press f4
+you can give a name to the variable, etc
+
+Declaration S means standalone variable
+to / length is size of the number
+internal ddata type S is small decimal
+decimal position is 0
+
+C also calls a program where you would type
+14 to compile
+             
+0000.01  *                                   
+0000.02 DNum1             S              5S 0
+0000.03 DNum2             S              5P 0
+0000.04 DNum3             S              5I 0
+0000.05 DNum4             S              5U 0
+0005.01  *                                   
+0005.02 D String          S             20A  
+0005.03 D Bool            S              1N  
+0005.04  /Free                               
+0005.05       Num1 = 19;                     
+0005.06       If Num1 > 18;                  
+0005.07         Dsply  'Major';              
+0005.08       ElseIf Num1 < 50;              
+0005.09          // is a comment             
+0005.10       Else;                          
+0005.11         Dsply 'Minor';               
+0005.12       EndIf;                   
+0005.13       Select;                  
+0005.14         When  Num1 > 18;       
+0005.15           Dsply 'Select Major';
+0005.16         When  Num1 < 50;       
+0005.17           // something else    
+0005.18         Others;                
+0005.19           // catchall here     
+0005.20       EndSl;                   
+0005.21       Dsply  'Hello World';    
+0005.22       *Inlr = *On;             
+0006.00  /End-Free                     
+
+
+
+
+
+
+                
+
+
