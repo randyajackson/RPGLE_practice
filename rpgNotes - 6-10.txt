@@ -1,0 +1,181 @@
+**free
+//Even those applications that on the surface seem to be creating files 
+//are actually creating records and storing them in a f ile 
+//that must have been defined to the operating system before program execution.
+
+//You can define these files to the system at a record level (i.e., not divided into individual f ields) or at a field level. 
+//If you define a file only at the record level, RPG programs that use that file must subdivide that record into the appropriate
+// fields by using fixed-format Input or Output specifications. 
+
+//ILE RPG programmers almost universally prefer externally described files over program-described files.
+
+//Externally described files can reduce the need for duplication of data (redundancy) across files
+
+//IBM i lets you define two kinds of database files: physical files and logical files.
+
+//Physical f iles  store data records in arrival sequence (i.e., the order in which they are written to the file). 
+
+// If you define a physical file at a field level and one or more of those fields are designated as a key field , 
+//you can subsequently access records stored in that file in either key sequence  or arrival sequence  (first in, first out)
+
+//Logical files  describe how data appears to be stored in the database. Logical files do not actually contain data records. 
+//Instead, they store access paths , or pointers, to records in physical files
+
+// The three most common uses for a logical file are to provide these capabilities: 
+// Sorting the records in a physical file 
+// Selecting certain records from a physical file 
+// Selecting certain fields from a physical file’s record layout
+
+//RPG does not distinguish between physical files and logical files. It uses the same coding and techniques to process either one.
+
+//A third type of file, the device file , associates a layout with a hardware device, such as a printer or a workstation.
+
+//The IBM i database principles correspond to SQL standards, but they predate SQL. 
+//Consequently, the system also uses an alternative tool, Data Description Specifications (DDS) , to define and create database objects. 
+
+//ILE RPG can process data objects originally created by SQL as well as DDS.
+
+//SQL Name 				IBM i System Name     
+//Schema (or Collection) 		Library (*LIB)
+//Table 				Physical file (*FILE  PF-DTA)
+//View      				Unkeyed logical file (*FILE  LF) 
+//Index 				Keyed logical file (*FILE LF)
+//Row 					Record
+//Column       				Field
+
+//SQL groups statements into four major categories: 
+// Data Definition Language (DDL)  statements 
+// Data Manipulation Language (DML)  statements 
+// Embedded SQL Host Language  statements 
+// SQL Procedural Language (SPL)  statements
+
+//Embedded SQL  statements are SQL instructions that you can incorporate—along with DDL and DML statements—into an RPG program. 
+//Chapter 10 deals with some basic DML statements as well as embedded SQL. 
+//Here are some regularly used embedded SQL statements: 
+// DECLARE CURSOR 
+// FETCH 
+// SELECT INTO
+
+//Programmers use a variety of utilities to generate and process SQL statements, but the three primary ones are as follows: 
+// Interactive SQL 
+// RUNSQLSTM  (Run SQL Statements) command 
+// IBM Data Studio
+
+//STRSQL to use sql command prompt in ibm i
+//runsqlstm for executing sql commands
+
+//Create Table Customers              
+//(Custno  Char(9)      Not Null Default Primary Key,
+//               Cfname  Char(15)     Default,
+//               Clname  Char(20)     Default,
+//               Caddr   Char(30)     Default,
+//               Czip    Char(5)      Default,
+//               Cphone  Char(10)     Not Null Default,
+//               Cemail  Char(50)     Not Null Default,
+//               Cdob    Decimal(8,0) Not Null Default,
+//               Cgender Char(1)      Not Null Default)
+//              Rcdfmt Custsrec
+
+//object names are limited to 10 characters
+
+//For example, if you create an SQL table called LOCALCUSTOMERS , 
+//SQL produces an object called LOCAL00001 , or some similar nondescript name. 
+//In this case, you can use the SQL Rename  statement to give the table a more useful object name:
+
+//Rename Table Localcustomers To System Name Localcusts
+
+//The following are the most common built-in data types used with IBM i: 
+// CHAR  (fixed-length character) 
+// VARCHAR  (variable-length character) 
+// DECIMAL  (packed numeric) 
+// NUMERIC  (zoned numeric) 
+// SMALLINT  (two-byte integer) 
+// INTEGER  (four-byte integer) 
+// BIGINT  (eight-byte integer) 
+// DATE 
+// TIME 
+// TIMESTAMP
+
+//A unique feature of the IBM i database is the requirement that a record format (layout) have a name. Moreover, RPG requires that the record format name be distinct from the table name.
+//To accommodate this requirement, the IBM i version of SQL enhances industrystandard SQL by including a RCDFMT  clause  to name the format:
+//Create Table Customers (…) Rcdfmt Custsrec
+
+//When the Create Table  statement does not include RCDFMT , the format name is the same as the table name. 
+//If that happened here is how to declare the file
+//Dcl-f Customers Rename(Customers:Custrec);
+
+//You can refer to objects either by a simple name, such as Customers , or by a qualified name
+//An object’s qualified name includes the name of the schema  (library) in which the object is stored.
+
+//You can also write the Create Table  statement shown earlier as
+//Create Table Flightproj/Customers …
+//or
+//Create Table Flightproj.Customers …
+//to explicitly place the table in the Flightproj  schema.
+
+//The SQL Set Option  statement can change the naming convention for an SQL session:
+//Set Option Naming = *Sql
+//or
+//Set Option Naming = *Sys (Default)
+
+//You can change the value of the current schema to use a specific schema with the SQL Set Schema  statement:
+//Set Schema = Flightproj
+//or
+//Set Schema = Default  (to use defaults)
+
+//Specifying a data type of DECIMAL  (or DEC ) defines a column as a packed decimal  number. 
+//Packed numbers take advantage of the redundancy built into digit representation by simply not bothering to store the zones of numbers.
+//Create Table ... (... CredLimit Decimal(9,2), ...)
+
+//around page 73, different sql variables
+
+//SQL views -  it stores an access path, a sequence of pointers to the actual data in one or more tables. 
+//An RPG program does not make a distinction between a table and a view when it is processing the file—the 
+//program can read and generally update the file whether it is a table or a view.
+
+//The SQL Create View  statement produces a view. 
+//The access path is built from an SQL Select  statement integrated within the Create View  statement:
+
+//Create View Custmales             
+//As Select * From Customers Where Cgender = 'M'             
+//Rcdfmt Custmrec
+
+//or
+
+//Create View Custusa             
+//As Select Clname, Cfname, Cphone, Cemail >From Customers                       
+//Where Country = 'USA'             
+//Rcdfmt Custurec
+
+//creating an index with sql
+
+//Create Index Custidx              
+//On Customers (Czip, Clname)              
+//Rcdfmt Custxrec
+
+//The source member type of a physical file member is PF , and the type of a logical file member is LF
+
+//Not using DDS files
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
